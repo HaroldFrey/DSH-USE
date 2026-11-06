@@ -1,0 +1,15 @@
+# npm 缓存
+.npm-cache/
+
+# 临时探测脚本
+_probe-sharp.mjs
+
+# 测试用 DSH home：含凭据文件与 node_modules，不入库
+desktop-pet/test-home/
+
+# 构建产物
+desktop-pet/dist/
+
+# 日志与临时文件
+*.log
+*.tmp
