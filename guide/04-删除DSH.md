@@ -101,13 +101,33 @@ netstat -ano | findstr :3080                                     # 空
 
 # 五、我在你工作区留的临时文件
 
-都在 `D:\Stduy\DSH-USE` 下，不影响卸载，想清就清：
+**2026-11-06 已全部清理**，这里只留个记录：`desktop-pet\`（桌宠插件离线包、隔离演练环境、图片分析脚本、两张诊断截图）、`.npm-cache\`、`_probe-sharp.mjs` 都已删除，工作区释放约 12 MB。
 
-| 路径 | 内容 | 建议 |
-|---|---|---|
-| `desktop-pet\dist\whale-girl-0.2.4.tgz` + `dist\package\` | 鲸鱼娘桌宠插件包（离线副本，2.6 MB + 解包 2.8 MB） | **留着**，桌面版 DSH 更新（0.1.7-rc.2）大概率能直接装它 |
-| `desktop-pet\test-home\` | 我做的隔离演练环境 | 可删 |
-| `desktop-pet\tools\`、`_probe-sharp.mjs` | 图片分析的小脚本 | 可删 |
-| `.npm-cache\` | 我下载包用的临时缓存 2.5 MB | 可删 |
+当时建议"留着"的鲸鱼娘插件包也一并删了——npm 上 `dsh-pet` 现在已是 0.4.4，需要时直接装新版即可，不必留这份离线副本。
 
 要我把步骤 0–5 打包成一个 `卸载DSH.cmd`（双击运行、带确认和验证输出）也行，说一声我就写。
+
+# 六、GitHub 版和桌面客户端的区别
+
+一句话：**内核是同一套，客户端只是把 Node / Python / 依赖全打包进了一个 Electron 外壳，再加了托盘、自动更新和桌面能力。**
+
+| 维度 | GitHub 版（你之前的） | 桌面客户端（现在这套） |
+|---|---|---|
+| 安装形态 | 一个 npm 包（`dsh`），靠系统的 Node 跑 | Electron 应用，自带运行时 |
+| 版本 / 体积 | 0.1.5-rc.1，264 MB / 25,583 文件 | 0.2.2-rc.1，1071 MB / 7,808 文件（asar 打包） |
+| 自带运行时 | 无，用你的 Node/npm | Node 24.21.0、pnpm 11.28.5、Python 3.12.14（含 python-docx/pptx、openpyxl、Pillow 等库） |
+| 启动方式 | 终端 `dsh`，浏览器打开 `127.0.0.1:3080` | 双击 exe，内嵌窗口，端口随机 |
+| 升级 | 自己 `npm i` | 内置更新器，nightly 频道（`download.deepseek.com/dsh-desk/feeds/win-x64/`） |
+| 桌面能力 | 只有网页 | 托盘、单实例、桌宠 helper |
+| 数据目录 | 自定义 `DSH_HOME`（`D:\...\home`） | 默认 `%USERPROFILE%\.dsh` |
+| CLI | `dsh` 全局命令 | 仍带 `dsh.cmd`（用 exe 当 Node 跑 asar 里的 cli.js），但没有全局命令 |
+
+## 对你实际有影响的三件事
+
+1. **Office 技能只有客户端开箱能用**：它自带 Python 3.12.14 和那批库；GitHub 版得自己装 Python 和 python-docx/pptx/openpyxl/Pillow。
+2. **桌宠要“上桌面”只能靠客户端**：`dsh-pet` 的显示位置 `desktop` / `both` 依赖客户端 helper 进程，浏览器版只有 `web`。
+3. **装插件更省心**：客户端用内置 pnpm 11.28.5，不碰你系统的 Node，也不会因为系统升级 Node 而崩。
+
+## 相同的部分
+
+配置、会话、插件、技能的**格式完全一样**，都在 `DSH_HOME` 下（`settings.yaml`、`sessions\`、`profiles\`、`skills\`）。换客户端时只需要搬 `.credentials.yaml`（API Key），其余照用——这次就是这么迁的。因此上面第一节到第五节那套卸载步骤，对两种装法**同样适用**。
